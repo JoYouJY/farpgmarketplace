@@ -1,0 +1,11 @@
+ID	|	Name (EN)	|	Description	|
+0	|	SHARD	|	A unique magical crystal shard that encapsulates the essence of rarity and distinction.	|
+1	|	BRONZE TICKET	|	Possess the enigmatic Bronze Ticket, a key to the unknown.	|
+2	|	SILVER TICKET	|	Its secrets linger, compelling the curious to unravel the mysteries it conceals.	|
+3	|	GOLDEN TICKET	|	A treasure veiled in mystery, hints at adventures untold.	|
+4	|	MAGICAL TICKET	|	A cryptic talisman of unknown potential.	|
+5	|	YOUPLING RED PACKET	|	This red packet can be opened within the officially released game, offering a few in-game coins and a chance to receive surprises.	|
+6	|	YOULONG RED PACKET	|	This red packet can be opened within the officially released game, offering more in-game coins and a chance to receive surprises.	|
+7	|	YOUDRAKE RED PACKET	|	This red packet can be opened within the officially released game, offering a significant in-game coins and a chance to receive surprises.	|
+8	|	YOUKING RED PACKET	|	This red packet can be opened within the officially released game, offering a lot of in-game coins and a high chance to receive surprises.	|
+9	|	GEM	|	Born from the resonance of hearts, linking one soul to another across fate and time.	|

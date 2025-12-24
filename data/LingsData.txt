@@ -1,0 +1,159 @@
+ID	|	Name (EN)	|	Description	|
+1	|	Youpling	|	Lings	|
+2	|	Youhorn	|	Lings	|
+3	|	Youlong	|	Lings	|
+4	|	Youking	|	Lings	|
+5	|	Youdraco	|	Lings	|
+6	|	Youdrake	|	Lings	|
+7	|	Zanling	|	Lings	|
+8	|	Zanreap	|	Lings	|
+9	|	Zanripple	|	Lings	|
+10	|	Grimmonarch	|	Lings	|
+11	|	Lumitan	|	Lings	|
+12	|	Abyssalen	|	Lings	|
+13	|	Twinkling	|	Lings	|
+14	|	Berghead	|	Lings	|
+15	|	Tentrouble	|	Lings	|
+16	|	Ancient Berghead	|	Lings	|
+17	|	Leeviathan	|	Lings	|
+18	|	Hexalopus	|	Lings	|
+19	|	Burling	|	Lings	|
+20	|	Bristleburrow	|	Lings	|
+21	|	Clawdigger	|	Lings	|
+22	|	Grizzleclaw	|	Lings	|
+23	|	Primospire	|	Lings	|
+24	|	Stonewhisker	|	Lings	|
+25	|	Marrowing	|	Lings	|
+26	|	Verdant	|	Lings	|
+27	|	Scalestorm	|	Lings	|
+28	|	Knightclaw	|	Lings	|
+29	|	Lazyleaf	|	Lings	|
+30	|	Botaniwing	|	Lings	|
+31	|	Finmancer	|	Lings	|
+32	|	Finferno	|	Lings	|
+33	|	Dreadbone	|	Lings	|
+34	|	Etherguide	|	Lings	|
+35	|	Finpouch	|	Lings	|
+36	|	Mistygrasp	|	Lings	|
+37	|	Ambling	|	Lings	|
+38	|	Firedash	|	Lings	|
+39	|	Flamestant	|	Lings	|
+40	|	Holyguard	|	Lings	|
+41	|	Langling	|	Lings	|
+42	|	Packer	|	Lings	|
+43	|	Icefurr	|	Lings	|
+44	|	Prisfurr	|	Lings	|
+45	|	Pengling	|	Lings	|
+46	|	Peckboss	|	Lings	|
+47	|	Peckking	|	Lings	|
+48	|	Hocuspocus	|	Lings	|
+53	|	Fluffling	|	Lings	|
+54	|	Cashmere	|	Lings	|
+55	|	Trieyes	|	Lings	|
+56	|	Umbra	|	Lings	|
+57	|	Mokee	|	Lings	|
+58	|	Nightwalker	|	Lings	|
+59	|	Robling	|	Lings	|
+60	|	Jetfloat	|	Lings	|
+61	|	Prismseal	|	Lings	|
+63	|	Hellfire	|	Lings	|
+64	|	Aracid	|	Lings	|
+69	|	Bihorn	|	Lings	|
+70	|	Deathride	|	Lings	|
+71	|	Haichiqueen	|	Lings	|
+72	|	Geodune	|	Lings	|
+73	|	Blitzgon	|	Lings	|
+74	|	Nonimo	|	Lings	|
+75	|	Divefin	|	Lings	|
+76	|	Fortihelm	|	Lings	|
+77	|	Holyfurr	|	Lings	|
+78	|	Ghosthowler	|	Lings	|
+79	|	Packshark	|	Lings	|
+80	|	Lupombat	|	Lings	|
+81	|	Sanbi	|	Lings	|
+82	|	Weremob	|	Lings	|
+84	|	Felinup	|	Lings	|
+86	|	Wombotron	|	Lings	|
+87	|	MQP-01	|	Lings	|
+88	|	Lupitron	|	Lings	|
+89	|	Felitron	|	Lings	|
+97	|	Dawnbringer	|	Lings	|
+10001	|	Shining Youpling	|	Description	|
+10002	|	Shining Youhorn	|	Lings	|
+10003	|	Shining Youlong	|	Lings	|
+10004	|	Shining Youking	|	Lings	|
+10005	|	Shining Youdraco	|	Lings	|
+10006	|	Shining Youdrake	|	Lings	|
+10007	|	Shining Zanling	|	Lings	|
+10008	|	Shining Zanreap	|	Lings	|
+10009	|	Shining Zanripple	|	Lings	|
+10010	|	Shining Grimmonarch	|	Lings	|
+10011	|	Shining Lumitan	|	Lings	|
+10012	|	Shining Abyssalen	|	Lings	|
+10013	|	Shining Twinkling	|	Lings	|
+10014	|	Shining Berghead	|	Lings	|
+10015	|	Shining Tentrouble	|	Lings	|
+10016	|	Shining Ancient Berghead	|	Lings	|
+10017	|	Shining Leeviathan	|	Lings	|
+10018	|	Shining Hexalopus	|	Lings	|
+10019	|	Shining Burling	|	Lings	|
+10020	|	Shining Bristleburrow	|	Lings	|
+10021	|	Shining Clawdigger	|	Lings	|
+10022	|	Shining Grizzleclaw	|	Lings	|
+10023	|	Shining Primospire	|	Lings	|
+10024	|	Shining Stonewhisker	|	Lings	|
+10025	|	Shining Marrowing	|	Lings	|
+10026	|	Shining Verdant	|	Lings	|
+10027	|	Shining Scalestorm	|	Lings	|
+10028	|	Shining Knightclaw	|	Lings	|
+10029	|	Shining Lazyleaf	|	Lings	|
+10030	|	Shining Botaniwing	|	Lings	|
+10031	|	Shining Finmancer	|	Lings	|
+10032	|	Shining Finferno	|	Lings	|
+10033	|	Shining Dreadbone	|	Lings	|
+10034	|	Shining Etherguide	|	Lings	|
+10035	|	Shining Finpouch	|	Lings	|
+10036	|	Shining Mistygrasp	|	Lings	|
+10037	|	Shining Ambling	|	Lings	|
+10038	|	Shining Firedash	|	Lings	|
+10039	|	Shining Flamestant	|	Lings	|
+10040	|	Shining Holyguard	|	Lings	|
+10041	|	Shining Langling	|	Lings	|
+10042	|	Shining Packer	|	Lings	|
+10043	|	Shining Icefurr	|	Lings	|
+10044	|	Shining Prisfurr	|	Lings	|
+10045	|	Shining Pengling	|	Lings	|
+10046	|	Shining Peckboss	|	Lings	|
+10047	|	Shining Peckking	|	Lings	|
+10048	|	Shining Hocuspocus	|	Lings	|
+10053	|	Shining Fluffling	|	Lings	|
+10054	|	Shining Cashmere	|	Lings	|
+10055	|	Shining Trieyes	|	Lings	|
+10056	|	Shining Umbra	|	Lings	|
+10057	|	Shining Mokee	|	Lings	|
+10058	|	Shining Nightwalker	|	Lings	|
+10059	|	Shining Robling	|	Lings	|
+10060	|	Shining Jetfloat	|	Lings	|
+10061	|	Shining Prismseal	|	Lings	|
+10063	|	Shining Hellfire	|	Lings	|
+10064	|	Shining Aracid	|	Lings	|
+10069	|	Shining Bihorn	|	Lings	|
+10070	|	Shining Deathride	|	Lings	|
+10071	|	Shining Haichiqueen	|	Lings	|
+10072	|	Shining Geodune	|	Lings	|
+10073	|	Shining Blitzgon	|	Lings	|
+10074	|	Shining Nonimo	|	Lings	|
+10075	|	Shining Divefin	|	Lings	|
+10076	|	Shining Fortihelm	|	Lings	|
+10077	|	Shining Holyfurr	|	Lings	|
+10078	|	Shining Ghosthowler	|	Lings	|
+10079	|	Shining Packshark	|	Lings	|
+10080	|	Shining Lupombat	|	Lings	|
+10081	|	Shining Sanbi	|	Lings	|
+10082	|	Shining Weremob	|	Lings	|
+10084	|	Shining Felinup	|	Lings	|
+10086	|	Shining Wombotron	|	Lings	|
+10087	|	Shining MQP-01	|	Lings	|
+10088	|	Shining Lupitron	|	Lings	|
+10089	|	Shining Felitron	|	Lings	|
+10097	|	Shining Dawnbringer	|	Lings	|

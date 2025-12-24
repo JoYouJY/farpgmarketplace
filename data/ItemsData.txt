@@ -1,0 +1,236 @@
+ID	|	Name (EN)	|	Description	|
+1	|	Chip	|	A mysterious chip	|
+2	|	Stamina bar	|	Instantly restores 6 hours of Stamina to a Ling, allowing it to resume training or participate in missions.	|
+3	|	Stamina bar XL	|	Instantly restores 24 hours of Stamina to a Ling, allowing it to continue training or participating in missions without delay.	|
+6	|	Lings Memory Fragment	|	Used to perform Kuchiyose and exceed the maximum potential of your Lings.	|
+7	|	Lupicall	|	Instant return to Cinos Campus.	|
+101	|	Jojo Training Story	|	Collect 60 of Jojo’s Training Stories to exchange for the Jojo Trainer License.	|
+105	|	QingYue Training Story	|	Collect 60 of Qing Yue’s Training Stories to exchange for the Qing Yue Trainer License.	|
+106	|	Lena Training Story	|	Collect 60 of Lena’s Training Stories to exchange for the Lena Trainer License.	|
+201	|	Jojo Trainer License	|	Consuming a Jojo Trainer License increases the Jojo (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+202	|	Michael Trainer License	|	Consuming a Michael Trainer License increases the Michael (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+203	|	Klue Trainer License	|	Consuming a Klue Trainer License increases the Klue (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+204	|	Emo Trainer License	|	Consuming a Emo Trainer License increases the Emo (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+210	|	Andre Trainer License	|	Consuming a Andre Trainer License increases the Andre (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+209	|	Yuka  Trainer License	|	Consuming a Yuka Trainer License increases the Yuka (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+206	|	Lena Trainer License	|	Consuming a Lena Trainer License increases the Lena (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+205	|	QingYue Trainer License	|	Consuming a Qing Yue Trainer License increases the Qing Yue (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+207	|	T Trainer License	|	Consuming a T Trainer License increases the T (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+214	|	Awakened Qing Yue Trainer License	|	Consuming a Awakened Qing Yue Trainer License increases the Awakened Qing Yue (Trainer) GENE strength by 1. Can be infused back to NFT.	|
+1001	|	Scholar (Body) A	|	Jojo's Outfit	|
+1002	|	Scholar (Body) B	|	Jojo's Outfit	|
+1003	|	Scholar (Body) C	|	Jojo's Outfit	|
+1004	|	Scholar (Body) D	|	Jojo's Outfit	|
+1005	|	Scholar (Body) E	|	Jojo's Outfit	|
+1006	|	Scholar (Body) F	|	Jojo's Outfit	|
+1007	|	Scholar (Body) G	|	Jojo's Outfit	|
+1008	|	Scholar (Body) H	|	Jojo's Outfit	|
+1009	|	Scholar (Leggings) A	|	Jojo's Outfit	|
+1010	|	Scholar (Leggings) B	|	Jojo's Outfit	|
+1011	|	Scholar (Leggings) C	|	Jojo's Outfit	|
+1012	|	Scholar (Leggings) D	|	Jojo's Outfit	|
+1013	|	Scholar (Leggings) E	|	Jojo's Outfit	|
+1014	|	Scholar (Leggings) F	|	Jojo's Outfit	|
+1015	|	Scholar (Leggings) G	|	Jojo's Outfit	|
+1016	|	Scholar (Leggings) H	|	Jojo's Outfit	|
+1017	|	Scholar (Boots) A	|	Jojo's Outfit	|
+1018	|	Scholar (Boots) B	|	Jojo's Outfit	|
+1019	|	Scholar (Boots) C	|	Jojo's Outfit	|
+1020	|	Scholar (Boots) D	|	Jojo's Outfit	|
+1021	|	Scholar (Boots) E	|	Jojo's Outfit	|
+1022	|	Scholar (Boots) F	|	Jojo's Outfit	|
+1023	|	Scholar (Boots) G	|	Jojo's Outfit	|
+1024	|	Scholar (Boots) H	|	Jojo's Outfit	|
+1025	|	Celestial Harmony (Body) A	|	Jojo's Outfit	|
+1026	|	Celestial Harmony (Body) B	|	Jojo's Outfit	|
+1027	|	Celestial Harmony (Body) C	|	Jojo's Outfit	|
+1028	|	Celestial Harmony (Body) D	|	Jojo's Outfit	|
+1029	|	Celestial Harmony (Body) E	|	Jojo's Outfit	|
+1030	|	Celestial Harmony (Body) F	|	Jojo's Outfit	|
+1031	|	Celestial Harmony (Body) G	|	Jojo's Outfit	|
+1032	|	Celestial Harmony (Body) H	|	Jojo's Outfit	|
+1033	|	Celestial Harmony (Leggings) A	|	Jojo's Outfit	|
+1034	|	Celestial Harmony (Leggings) B	|	Jojo's Outfit	|
+1035	|	Celestial Harmony (Leggings) C	|	Jojo's Outfit	|
+1036	|	Celestial Harmony (Leggings) D	|	Jojo's Outfit	|
+1037	|	Celestial Harmony (Leggings) E	|	Jojo's Outfit	|
+1038	|	Celestial Harmony (Leggings) F	|	Jojo's Outfit	|
+1039	|	Celestial Harmony (Leggings) G	|	Jojo's Outfit	|
+1040	|	Celestial Harmony (Leggings) H	|	Jojo's Outfit	|
+1041	|	Celestial Harmony (Boots) A	|	Jojo's Outfit	|
+1042	|	Celestial Harmony (Boots) B	|	Jojo's Outfit	|
+1043	|	Celestial Harmony (Boots) C	|	Jojo's Outfit	|
+1044	|	Celestial Harmony (Boots) D	|	Jojo's Outfit	|
+1045	|	Celestial Harmony (Boots) E	|	Jojo's Outfit	|
+1046	|	Celestial Harmony (Boots) F	|	Jojo's Outfit	|
+1047	|	Celestial Harmony (Boots) G	|	Jojo's Outfit	|
+1048	|	Celestial Harmony (Boots) H	|	Jojo's Outfit	|
+1049	|	Love Embrace (Body) A	|	Jojo's Outfit	|
+1050	|	Love Embrace (Body) B	|	Jojo's Outfit	|
+1051	|	Love Embrace (Body) C	|	Jojo's Outfit	|
+1052	|	Love Embrace (Body) D	|	Jojo's Outfit	|
+1053	|	Love Embrace (Body) E	|	Jojo's Outfit	|
+1054	|	Love Embrace (Body) F	|	Jojo's Outfit	|
+1055	|	Love Embrace (Body) G	|	Jojo's Outfit	|
+1056	|	Love Embrace (Body) H	|	Jojo's Outfit	|
+1057	|	Love Embrace (Leggings) A	|	Jojo's Outfit	|
+1058	|	Love Embrace (Leggings) B	|	Jojo's Outfit	|
+1059	|	Love Embrace (Leggings) C	|	Jojo's Outfit	|
+1060	|	Love Embrace (Leggings) D	|	Jojo's Outfit	|
+1061	|	Love Embrace (Leggings) E	|	Jojo's Outfit	|
+1062	|	Love Embrace (Leggings) F	|	Jojo's Outfit	|
+1063	|	Love Embrace (Leggings) G	|	Jojo's Outfit	|
+1064	|	Love Embrace (Leggings) H	|	Jojo's Outfit	|
+1065	|	Love Embrace  (Boots) A	|	Jojo's Outfit	|
+1066	|	Love Embrace  (Boots) B	|	Jojo's Outfit	|
+1067	|	Love Embrace  (Boots) C	|	Jojo's Outfit	|
+1068	|	Love Embrace  (Boots) D	|	Jojo's Outfit	|
+1069	|	Love Embrace  (Boots) E	|	Jojo's Outfit	|
+1070	|	Love Embrace  (Boots) F	|	Jojo's Outfit	|
+1071	|	Love Embrace  (Boots) G	|	Jojo's Outfit	|
+1072	|	Love Embrace  (Boots) H	|	Jojo's Outfit	|
+1073	|	Cyber Strike (Body) A	|	Jojo's Outfit	|
+1074	|	Cyber Strike (Body) B	|	Jojo's Outfit	|
+1075	|	Cyber Strike (Body) C	|	Jojo's Outfit	|
+1076	|	Cyber Strike (Body) D	|	Jojo's Outfit	|
+1077	|	Cyber Strike (Body) E	|	Jojo's Outfit	|
+1078	|	Cyber Strike (Body) F	|	Jojo's Outfit	|
+1079	|	Cyber Strike (Body) G	|	Jojo's Outfit	|
+1080	|	Cyber Strike (Body) H	|	Jojo's Outfit	|
+1081	|	Cyber Strike (Leggings) A	|	Jojo's Outfit	|
+1082	|	Cyber Strike (Leggings) B	|	Jojo's Outfit	|
+1083	|	Cyber Strike (Leggings) C	|	Jojo's Outfit	|
+1084	|	Cyber Strike (Leggings) D	|	Jojo's Outfit	|
+1085	|	Cyber Strike (Leggings) E	|	Jojo's Outfit	|
+1086	|	Cyber Strike (Leggings) F	|	Jojo's Outfit	|
+1087	|	Cyber Strike (Leggings) G	|	Jojo's Outfit	|
+1088	|	Cyber Strike (Leggings) H	|	Jojo's Outfit	|
+1089	|	Cyber Strike (Boots) A	|	Jojo's Outfit	|
+1090	|	Cyber Strike (Boots) B	|	Jojo's Outfit	|
+1091	|	Cyber Strike (Boots) C	|	Jojo's Outfit	|
+1092	|	Cyber Strike (Boots) D	|	Jojo's Outfit	|
+1093	|	Cyber Strike (Boots) E	|	Jojo's Outfit	|
+1094	|	Cyber Strike (Boots) F	|	Jojo's Outfit	|
+1095	|	Cyber Strike (Boots) G	|	Jojo's Outfit	|
+1096	|	Cyber Strike (Boots) H	|	Jojo's Outfit	|
+1097	|	Starlight Diva (Body) A	|	Jojo's Outfit	|
+1098	|	Starlight Diva (Body) B	|	Jojo's Outfit	|
+1099	|	Starlight Diva (Body) C	|	Jojo's Outfit	|
+1100	|	Starlight Diva (Body) D	|	Jojo's Outfit	|
+1101	|	Starlight Diva (Body) E	|	Jojo's Outfit	|
+1102	|	Starlight Diva (Body) F	|	Jojo's Outfit	|
+1103	|	Starlight Diva (Body) G	|	Jojo's Outfit	|
+1104	|	Starlight Diva (Body) H	|	Jojo's Outfit	|
+1105	|	Starlight Diva (Leggings) A	|	Jojo's Outfit	|
+1106	|	Starlight Diva (Leggings) B	|	Jojo's Outfit	|
+1107	|	Starlight Diva (Leggings) C	|	Jojo's Outfit	|
+1108	|	Starlight Diva (Leggings) D	|	Jojo's Outfit	|
+1109	|	Starlight Diva (Leggings) E	|	Jojo's Outfit	|
+1110	|	Starlight Diva (Leggings) F	|	Jojo's Outfit	|
+1111	|	Starlight Diva (Leggings) G	|	Jojo's Outfit	|
+1112	|	Starlight Diva (Leggings) H	|	Jojo's Outfit	|
+1113	|	Starlight Diva (Boots) A	|	Jojo's Outfit	|
+1114	|	Starlight Diva (Boots) B	|	Jojo's Outfit	|
+1115	|	Starlight Diva (Boots) C	|	Jojo's Outfit	|
+1116	|	Starlight Diva (Boots) D	|	Jojo's Outfit	|
+1117	|	Starlight Diva (Boots) E	|	Jojo's Outfit	|
+1118	|	Starlight Diva (Boots) F	|	Jojo's Outfit	|
+1119	|	Starlight Diva (Boots) G	|	Jojo's Outfit	|
+1120	|	Starlight Diva (Boots) H	|	Jojo's Outfit	|
+1121	|	Serpent Tribe (Body) A	|	Jojo's Outfit	|
+1122	|	Serpent Tribe (Body) B	|	Jojo's Outfit	|
+1123	|	Serpent Tribe (Body) C	|	Jojo's Outfit	|
+1124	|	Serpent Tribe (Body) D	|	Jojo's Outfit	|
+1125	|	Serpent Tribe (Body) E	|	Jojo's Outfit	|
+1126	|	Serpent Tribe (Body) F	|	Jojo's Outfit	|
+1127	|	Serpent Tribe (Body) G	|	Jojo's Outfit	|
+1128	|	Serpent Tribe (Body) H	|	Jojo's Outfit	|
+1129	|	Serpent Tribe (Leggings) A	|	Jojo's Outfit	|
+1130	|	Serpent Tribe (Leggings) B	|	Jojo's Outfit	|
+1131	|	Serpent Tribe (Leggings) C	|	Jojo's Outfit	|
+1132	|	Serpent Tribe (Leggings) D	|	Jojo's Outfit	|
+1133	|	Serpent Tribe (Leggings) E	|	Jojo's Outfit	|
+1134	|	Serpent Tribe (Leggings) F	|	Jojo's Outfit	|
+1135	|	Serpent Tribe (Leggings) G	|	Jojo's Outfit	|
+1136	|	Serpent Tribe (Leggings) H	|	Jojo's Outfit	|
+1137	|	Serpent Tribe (Boots) A	|	Jojo's Outfit	|
+1138	|	Serpent Tribe (Boots) B	|	Jojo's Outfit	|
+1139	|	Serpent Tribe (Boots) C	|	Jojo's Outfit	|
+1140	|	Serpent Tribe (Boots) D	|	Jojo's Outfit	|
+1141	|	Serpent Tribe (Boots) E	|	Jojo's Outfit	|
+1142	|	Serpent Tribe (Boots) F	|	Jojo's Outfit	|
+1143	|	Serpent Tribe (Boots) G	|	Jojo's Outfit	|
+1144	|	Serpent Tribe (Boots) H	|	Jojo's Outfit	|
+1145	|	Pearl Empress (Body) A	|	Jojo's Outfit	|
+1146	|	Pearl Empress (Body) B	|	Jojo's Outfit	|
+1147	|	Pearl Empress (Body) C	|	Jojo's Outfit	|
+1148	|	Pearl Empress (Body) D	|	Jojo's Outfit	|
+1149	|	Pearl Empress (Body) E	|	Jojo's Outfit	|
+1150	|	Pearl Empress (Body) F	|	Jojo's Outfit	|
+1151	|	Pearl Empress (Body) G	|	Jojo's Outfit	|
+1152	|	Pearl Empress (Body) H	|	Jojo's Outfit	|
+1153	|	Pearl Empress (Leggings) A	|	Jojo's Outfit	|
+1154	|	Pearl Empress (Leggings) B	|	Jojo's Outfit	|
+1155	|	Pearl Empress (Leggings) C	|	Jojo's Outfit	|
+1156	|	Pearl Empress (Leggings) D	|	Jojo's Outfit	|
+1157	|	Pearl Empress (Leggings) E	|	Jojo's Outfit	|
+1158	|	Pearl Empress (Leggings) F	|	Jojo's Outfit	|
+1159	|	Pearl Empress (Leggings) G	|	Jojo's Outfit	|
+1160	|	Pearl Empress (Leggings) H	|	Jojo's Outfit	|
+1161	|	Pearl Empress (Boots) A	|	Jojo's Outfit	|
+1162	|	Pearl Empress (Boots) B	|	Jojo's Outfit	|
+1163	|	Pearl Empress (Boots) C	|	Jojo's Outfit	|
+1164	|	Pearl Empress (Boots) D	|	Jojo's Outfit	|
+1165	|	Pearl Empress (Boots) E	|	Jojo's Outfit	|
+1166	|	Pearl Empress (Boots) F	|	Jojo's Outfit	|
+1167	|	Pearl Empress (Boots) G	|	Jojo's Outfit	|
+1168	|	Pearl Empress (Boots) H	|	Jojo's Outfit	|
+3001	|	Bolt	|	Aerobot	|
+3002	|	Pixi	|	Aerobot	|
+3003	|	Finspark	|	Aerobot	|
+3004	|	Cyanite	|	Aerobot	|
+3005	|	Daemon	|	Aerobot	|
+3006	|	Skye	|	Aerobot	|
+3007	|	Cocoon	|	Aerobot	|
+3008	|	Orbitron	|	Aerobot	|
+3009	|	Glide	|	Aerobot	|
+3010	|	Bolt Mark II	|	Aerobot	|
+3011	|	Lovey	|	Aerobot	|
+3012	|	Zetabot	|	Aerobot	|
+3013	|	Roxie	|	Aerobot	|
+3014	|	Puzzle	|	Aerobot	|
+3015	|	Aura	|	Aerobot	|
+3016	|	Goldon	|	Aerobot	|
+3017	|	Meteoron	|	Aerobot	|
+6001	|	Crown	|	Headgear	|
+6002	|	Helm	|	Headgear	|
+6003	|	Blade	|	Headgear	|
+6004	|	Hibiscus	|	Headgear	|
+6005	|	Magician Hat	|	Headgear	|
+6006	|	Bunny	|	Headgear	|
+6007	|	Straw Hat	|	Headgear	|
+6008	|	Santa Hat	|	Headgear	|
+6009	|	Poo	|	Headgear	|
+6010	|	Cat Ear	|	Headgear	|
+6011	|	Horn	|	Headgear	|
+6012	|	Puppy Ear	|	Headgear	|
+6013	|	Fox Mask	|	Headgear	|
+6014	|	Ninja	|	Headgear	|
+6015	|	Tiara	|	Headgear	|
+6016	|	Saht Gaht	|	Headgear	|
+6017	|	Panda Hat	|	Headgear	|
+6018	|	Angel Wings	|	Headgear	|
+6019	|	Golden Gori	|	Headgear	|
+6020	|	Dice	|	Headgear	|
+6021	|	Sprout	|	Headgear	|
+6022	|	Goggle	|	Headgear	|
+6023	|	Propeller	|	Headgear	|
+6024	|	Kwg Bogwan	|	Headgear	|
+6025	|	Money	|	Headgear	|
+6026	|	Devil Wings	|	Headgear	|
+6027	|	Heart	|	Headgear	|
+6028	|	Fancy Highcap	|	Headgear	|
+6029	|	Leaf	|	Headgear	|
+6030	|	Tin Foil Hat	|	Headgear	|
+6031	|	Star	|	Headgear	|
+6032	|	Goglz Google	|	Headgear	|

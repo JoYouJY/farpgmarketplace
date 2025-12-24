@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fate Adventure RPG Marketplace</title>
+    
+    <!-- Favicon / App Icons -->
+    <link rel="icon" href="icons/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+
+    <!-- Apple iOS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+
+    <!-- Android / PWA -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/android-chrome-512x512.png">
+
+    <!-- Optional: if you have a web manifest file -->
+    <!-- <link rel="manifest" href="icons/site.webmanifest"> -->
+
+    <!-- Optional: nice theme color for mobile browsers -->
+    <meta name="theme-color" content="#0f172a">
+
+
+    <!-- Social Preview / Open Graph -->
+    <meta property="og:title" content="Fate Adventure RPG Marketplace">
+    <meta property="og:description" content="The official decentralized marketplace for Fate Adventure RPG. Buy, sell, and trade Items, Event Currencies, and Lings securely on the Sonic Chain.">
+    <meta property="og:image" content="icons/social_preview.png">
+    <meta property="og:url" content="https://fagame.org">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fate Adventure RPG Marketplace">
+    <meta name="twitter:description" content="Trade assets in the Fate Adventure RPG universe.">
+    <meta name="twitter:image" content="icons/social_preview.png">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.2/ethers.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Theme: Blue Purple Premium */
+            --bg-dark: #0f172a;   /* Slate 900 */
+            --bg-card: #1e293b;   /* Slate 800 */
+            --bg-hover: #334155;  /* Slate 700 */
+            
+            /* Gradient Primary */
+            --primary: #8b5cf6;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); /* Indigo to Purple */
+            --primary-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            --primary-dim: rgba(139, 92, 246, 0.15);
+            
+            /* Accents */
+            --currency: #38bdf8;  /* Sky Blue for $S consistency */
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            
+            --success: #10b981;
+            --error: #ef4444;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PRELOADER --- */
+        #app-loader {
+            position: fixed; inset: 0; background: var(--bg-dark); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+        #app-loader.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .loader-rune {
+            position: relative; width: 100px; height: 100px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #6366f1; /* Indigo */
+            border-bottom-color: #38bdf8; /* Sky */
+            animation: runeSpin 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.5));
+        }
+        .loader-rune::before {
+            content: ''; position: absolute; inset: 12px; border-radius: 50%;
+            border: 3px solid transparent; 
+            border-left-color: #a855f7; /* Purple */
+            border-right-color: #ec4899; /* Pink accent */
+            animation: runeSpin 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
+        }
+        .loader-rune::after {
+            content: ''; position: absolute; inset: 30px; border-radius: 50%;
+            background: var(--primary-gradient); opacity: 0.8;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        @keyframes runeSpin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse-glow { 0%, 100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1); opacity: 1; } }
+
+        .loader-text {
+            margin-top: 40px; 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 800;
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            font-size: 1.1rem;
+            text-align: center;
+            
+            /* Premium Shine Effect */
+            background: linear-gradient(to right, #64748b 20%, #f8fafc 50%, #64748b 80%);
+            background-size: 200% auto;
+            color: #fff;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            background: var(--bg-dark);
+            padding: 5px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .nav-links button {
+            background: none; 
+            border: none; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .nav-links button.active { 
+            background: var(--bg-hover);
+            color: #fff;
+            border: 1px solid var(--border);
+        }
+        .nav-links button:hover:not(.active) { color: var(--text-main); background: var(--bg-hover); }
+
+        .wallet-container { display: flex; align-items: center; gap: 15px; }
+        
+        .wallet-balance { 
+            color: var(--text-main); 
+            font-weight: 600; 
+            font-size: 0.95rem; 
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+        .currency-symbol { color: var(--currency); font-weight: 700; }
+
+        .wallet-btn {
+            background: var(--primary-gradient); 
+            color: #fff; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+            white-space: nowrap;
+        }
+        .wallet-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .wallet-btn:active { transform: translateY(0); }
+
+        /* Status Bar */
+        .status-bar {
+            background: var(--bg-card); 
+            padding: 8px 2rem; 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .status-left { display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+        .status-dot.live { background: var(--success); box-shadow: 0 0 5px var(--success); }
+        .status-dot.syncing { background: #6366f1; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .refresh-btn { 
+            background: transparent; border: 1px solid var(--border); 
+            color: var(--text-muted); padding: 4px 10px; border-radius: 4px; 
+            cursor: pointer; font-size: 0.75rem; transition: all 0.2s;
+        }
+        .refresh-btn:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--text-muted); }
+
+        /* Layout */
+        .container { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+        
+        /* Filters */
+        .controls {
+            display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; 
+            padding: 20px; background: var(--bg-card); border-radius: var(--radius); 
+            align-items: center; border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        select, input {
+            background: var(--bg-dark); 
+            border: 1px solid var(--border); 
+            color: var(--text-main); 
+            padding: 10px 14px; 
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        select:focus, input:focus { border-color: #6366f1; }
+
+        /* Grid */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
+        .page-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .page-btn:hover:not(:disabled) {
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-1px);
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Fee Summary Box */
+        .fee-breakdown {
+            background: var(--bg-card); border: 1px solid var(--border); padding: 12px; border-radius: 8px;
+            margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);
+        }
+        .fee-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .fee-row.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; color: var(--success); font-weight: 700; }
+
+        /* Card */
+        .card {
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            border-radius: var(--radius); 
+            overflow: hidden; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover { transform: translateY(-4px); border-color: #6366f1; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3); }
+        
+        .card-img-placeholder {
+            width: 100%; height: 220px; 
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            display: flex; align-items: center; justify-content: center; 
+            color: #64748b;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            padding: 10px;
+        }
+        /* CHANGED: Contain images within box */
+        .card-img-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+
+        .card-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-title { font-weight: 700; margin-bottom: 8px; color: var(--text-main); font-size: 1.1rem; }
+        
+        .card-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted); }
+        
+        .price { 
+            font-size: 1.3rem; color: var(--text-main); font-weight: 700; margin: 12px 0; 
+            display: flex; align-items: center; gap: 4px;
+        }
+        .price span { color: var(--currency); font-size: 0.9rem; }
+
+        .card-actions { margin-top: auto; display: flex; gap: 8px; }
+        
+        .btn { 
+            width: 100%; padding: 10px; border: none; border-radius: 8px; 
+            cursor: pointer; font-weight: 600; font-size: 0.9rem; 
+            transition: opacity 0.2s; color: white;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-buy { background: var(--primary-gradient); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+        .btn-cancel { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-cancel:hover { background: rgba(239, 68, 68, 0.25); }
+        .btn-update { background: var(--bg-hover); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-update:hover { background: #475569; }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            background: var(--bg-card);
+            text-align: center;
+        }
+        .footer-content {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+        }
+        .social-links { display: flex; gap: 24px; align-items: center; }
+        .social-link {
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+            color: var(--text-muted); /* Reset color for SVGs */
+        }
+        .social-link svg {
+            width: 28px; height: 28px;
+            fill: currentColor;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+            transition: all 0.3s ease;
+        }
+        .social-link:hover {
+            color: #a855f7; /* Hover color for parent text/icon */
+            transform: translateY(-3px) scale(1.1);
+        }
+        .social-link:hover svg {
+            opacity: 1;
+            filter: drop-shadow(0 0 8px var(--primary));
+        }
+
+        /* Modal Overlay */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 200;
+            align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;
+        }
+        .modal.active { display: flex; opacity: 1; }
+        
+        .modal-content { 
+            background: var(--bg-card); padding: 32px; border-radius: 16px; 
+            width: 420px; border: 1px solid var(--border); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95); transition: transform 0.2s;
+        }
+        .modal.active .modal-content { transform: scale(1); }
+
+        .modal-header { 
+            font-size: 1.25rem; font-weight: 700; margin-bottom: 24px; 
+            color: var(--text-main); display: flex; justify-content: space-between; align-items: center; 
+        }
+        .close-modal { cursor: pointer; color: var(--text-muted); font-size: 1.5rem; line-height: 1; }
+        .close-modal:hover { color: var(--error); }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
+        .form-group input { width: 100%; background: var(--bg-dark); }
+
+        /* Status Overlay (No Alert) */
+        #status-overlay-content { text-align: center; }
+        .spinner { 
+            width: 40px; height: 40px; border: 4px solid var(--border); 
+            border-top-color: #6366f1; border-radius: 50%; 
+            animation: spin 1s linear infinite; margin: 0 auto 20px auto; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .status-message { color: var(--text-main); font-size: 1.1rem; margin-bottom: 20px; }
+        .status-sub { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed; bottom: 20px; right: 20px; z-index: 300;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            background: var(--bg-card); color: var(--text-main);
+            padding: 12px 20px; border-radius: 8px; border-left: 4px solid #6366f1;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            font-size: 0.9rem; min-width: 250px;
+            animation: slideIn 0.3s ease-out;
+        }
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--error); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; padding: 1rem; align-items: stretch; }
+            .logo { text-align: center; font-size: 1.3rem; }
+            
+            .nav-links {
+                width: 100%; overflow-x: auto; white-space: nowrap; 
+                justify-content: flex-start; padding-bottom: 5px; 
+                -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links button { flex-shrink: 0; padding: 8px 12px; }
+
+            .wallet-container { justify-content: center; width: 100%; flex-wrap: wrap; }
+            .status-bar { flex-direction: column; gap: 10px; align-items: flex-start; }
+            
+            .container { padding: 0 1rem; }
+            
+            /* Responsive Grid */
+            .grid { 
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+                gap: 15px; 
+            }
+            
+            .controls { flex-direction: column; align-items: stretch; padding: 15px; gap: 15px; }
+            .controls > * { width: 100% !important; margin: 0 !important; }
+            .controls select, .controls input { width: 100%; }
+            /* Helper for scan button layout */
+            .controls > div[style*="display: flex"] { flex-direction: row; }
+            
+            .modal-content { width: 90%; padding: 20px; }
+            .card-img-placeholder { height: 160px; }
+            .card-title { font-size: 1rem; }
+            .price { font-size: 1.1rem; }
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        a { text-decoration: none; color: inherit; }
+    </style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="app-loader">
+    <div class="loader-rune"></div>
+    <div class="loader-text">Entering Fate Adventure Marketplace</div>
+</div>
+
+<header>
+    <div class="logo">Fate Adventure RPG</div>
+    <div class="nav-links">
+        <button id="nav-all" onclick="switchTab('all')">All Collections</button>
+        <button id="nav-market" class="active" onclick="switchTab('market')">Marketplace</button>
+        <button id="nav-inventory" onclick="switchTab('inventory')">My Inventory</button>
+        <button id="nav-mylist" onclick="switchTab('mylist')">My Listings</button>
+    </div>
+    <div class="wallet-container">
+        <span id="wallet-balance" class="wallet-balance">0.0000 <span class="currency-symbol">$S</span></span>
+        <button id="connect-btn" class="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
+    </div>
+</header>
+
+<div class="status-bar">
+    <div style="display: flex; align-items: center;">
+        <div id="status-indicator" class="status-dot"></div>
+        <span id="sync-status">Status: Waiting to sync...</span>
+    </div>
+    <div style="display: flex; align-items: center;">
+        <span id="block-info">Block: -</span>
+        <button class="refresh-btn" onclick="manualSync()">Refresh</button>
+    </div>
+</div>
+
+<!-- MODALS (Moved Top-Level for Safety) -->
+
+<!-- Buy Modal -->
+<div id="buy-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>Buy Item</span>
+            <span class="close-modal" onclick="closeModal('buy-modal')">&times;</span>
+        </div>
+        <p id="buy-summary" style="margin-bottom: 20px; color: var(--text-muted);"></p>
+        
+        <div class="form-group">
+            <label>Quantity to Buy</label>
+            <input type="number" id="buy-amount" value="1" min="1" oninput="updateBuyTotal()">
+        </div>
+        
+        <div style="background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--text-muted);">Total Cost</span>
+            <span style="font-size: 1.2rem; font-weight: 700; color: var(--text-main);"><span id="buy-total-eth">0</span> <span class="currency-symbol">$S</span></span>
+        </div>
+        
+        <button class="btn btn-buy" onclick="submitBuy()">Confirm Purchase</button>
+    </div>
+</div>
+
+<!-- Update Price Modal -->
+<div id="update-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>Update Price</span>
+            <span class="close-modal" onclick="closeModal('update-modal')">&times;</span>
+        </div>
+        <div class="form-group">
+            <label>New Price (<span class="currency-symbol">$S</span>)</label>
+            <input type="number" id="update-new-price" step="0.000001">
+        </div>
+        <button class="btn btn-update" onclick="submitUpdatePrice()">Confirm Update</button>
+    </div>
+</div>
+
+<!-- Create Listing Modal -->
+<div id="list-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>List Item</span>
+            <span class="close-modal" onclick="closeModal('list-modal')">&times;</span>
+        </div>
+        <div id="list-preview" style="margin-bottom: 24px; padding: 12px; background: var(--bg-dark); border-radius: 8px; color: var(--text-main); font-weight: 600; border: 1px solid var(--border);"></div>
+        
+        <input type="hidden" id="list-collection">
+        <input type="hidden" id="list-tokenid">
+        
+        <div class="form-group">
+            <label>Quantity (Max: <span id="list-max-qty">0</span>)</label>
+            <input type="number" id="list-amount" value="1" min="1">
+        </div>
+        <div class="form-group">
+            <label>Price Per Unit (<span class="currency-symbol">$S</span>)</label>
+            <input type="number" id="list-price" placeholder="0.05" step="0.000001" oninput="calculateListingFees()">
+        </div>
+
+        <!-- Fee Summary -->
+        <div id="list-fee-summary" class="fee-breakdown hidden">
+            <!-- Populated via JS -->
+        </div>
+
+        <button id="btn-approve" class="btn btn-update" onclick="checkAndApprove()" style="margin-top: 15px; margin-bottom: 12px;">Check Allowance</button>
+        <button id="btn-create" class="btn btn-buy" onclick="createListing()" disabled>Confirm Listing</button>
+        <p id="create-msg" style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted); text-align: center; min-height: 1.2em;"></p>
+    </div>
+</div>
+
+<!-- STATUS OVERLAY -->
+<div id="status-overlay" class="modal">
+    <div class="modal-content" id="status-overlay-content">
+        <div class="spinner" id="status-spinner"></div>
+        <div class="status-message" id="status-msg">Processing...</div>
+        <div class="status-sub" id="status-sub-msg">Please wait</div>
+        <button id="status-close-btn" class="btn btn-update hidden" onclick="closeStatusOverlay()" style="margin-top: 20px;">Close</button>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- ALL COLLECTIONS TAB -->
+<div id="tab-all" class="container hidden">
+    <div class="controls">
+        <select id="all-filter-collection" onchange="debounceRenderAll()">
+            <option value="all">All Collections</option>
+        </select>
+        <input type="text" id="all-search" placeholder="Search Name or ID..." oninput="debounceRenderAll()">
+        <div style="flex-grow: 1; text-align: right; color: var(--text-muted); font-size: 0.9rem;">
+            <span id="all-count" style="color: var(--text-main); font-weight: bold;">0</span> known items
+        </div>
+    </div>
+    <div id="all-grid" class="grid"></div>
+    <div id="all-pagination" class="pagination"></div>
+</div>
+
+<!-- MARKETPLACE TAB -->
+<div id="tab-market" class="container">
+    <div class="controls">
+        <select id="filter-collection" onchange="debounceRender()">
+            <option value="all">All Collections</option>
+        </select>
+        <input type="text" id="market-search" placeholder="Search Name or ID..." oninput="debounceRender()">
+        <input type="text" id="filter-seller" placeholder="Seller Address" oninput="debounceRender()">
+        <select id="sort-order" onchange="debounceRender()">
+            <option value="newest">Newest First</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+        </select>
+        <div style="flex-grow: 1; text-align: right; color: var(--text-muted); font-size: 0.9rem;">
+            <span id="market-count" style="color: var(--text-main); font-weight: bold;">0</span> items listed
+        </div>
+    </div>
+    <div id="market-grid" class="grid"></div>
+    <div id="market-pagination" class="pagination"></div>
+</div>
+
+<!-- MY INVENTORY TAB -->
+<div id="tab-inventory" class="container hidden">
+    <div class="controls">
+        <select id="inv-filter-collection" onchange="debounceRenderInventory()">
+            <option value="all">All Collections</option>
+        </select>
+        <input type="text" id="inv-search" placeholder="Search Name or ID..." oninput="debounceRenderInventory()">
+        <div style="flex-grow: 1; text-align: right;">
+            <button class="btn" style="background: var(--primary-dim); color: #a855f7; border: 1px solid #a855f7; width: auto;" onclick="scanInventory()">Rescan Wallet</button>
+        </div>
+    </div>
+    <div id="inventory-grid" class="grid"></div>
+    <div id="inventory-pagination" class="pagination"></div>
+    <div id="inv-msg" style="text-align: center; margin-top: 40px; color: var(--text-muted); padding: 40px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border);">
+        <p style="font-size: 1.1rem; margin-bottom: 10px;">Connect wallet to view inventory.</p>
+    </div>
+</div>
+
+<!-- MY LISTINGS TAB -->
+<div id="tab-mylist" class="container hidden">
+    <div class="controls">
+        <select id="mylist-filter-collection" onchange="debounceRenderMyListings()">
+            <option value="all">All Collections</option>
+        </select>
+        <input type="text" id="mylist-search" placeholder="Search Name or ID..." oninput="debounceRenderMyListings()">
+        <select id="mylist-sort-order" onchange="debounceRenderMyListings()">
+            <option value="newest">Newest First</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+        </select>
+        <div style="flex-grow: 1; text-align: right; color: var(--text-muted); font-size: 0.9rem;">
+            <span id="mylist-count" style="color: var(--text-main); font-weight: bold;">0</span> items
+        </div>
+    </div>
+    <div id="mylist-grid" class="grid"></div>
+    <div id="mylist-pagination" class="pagination"></div>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <div class="social-links">
+            <a href="https://fagame.org" target="_blank" title="Website" class="social-link">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            </a>
+            <a href="https://x.com/FateAdventure" target="_blank" title="X (Twitter)" class="social-link">
+                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://discord.gg/AyGAYrH4Ms" target="_blank" title="Discord" class="social-link">
+                <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z"/></svg>
+            </a>
+            <a href="https://t.me/Fateadventure" target="_blank" title="Telegram" class="social-link">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.06-.14-.04-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+            </a>
+            <a href="https://rpg.fateadventure.com/" target="_blank" title="Play Game" class="social-link">
+                <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            </a>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">© 2025 Fate Adventure RPG</div>
+    </div>
+</footer>
+
+<script>
+/** * JOJOYOU's Simple Static Marketplace
+ * Configured for Sonic Labs (Chain 146)
+ */
+
+// --- CONFIGURATION ---
+const RPC_URL = "https://rpc.soniclabs.com";
+const CHAIN_ID = 146n;
+const CHAIN_ID_HEX = "0x92"; 
+const MARKET_ADDR = "0x2b4323837510F2a6273a9040fad31E289cfC8Fdf";
+const START_BLOCK = 58748543;
+const CHUNK_SIZE = 20000;
+const REORG_BUFFER = 50;
+const SYNC_INTERVAL = 15000; 
+const INTEGRITY_INTERVAL = 2500; 
+const ITEMS_PER_PAGE = 24;
+
+// Mock Data for fallback in Canvas Preview (where file fetch fails)
+const FALLBACK_DATA = {
+    "items": `1|Wooden Sword|Basic sword
+2|Iron Shield|Solid protection
+3|Healing Potion|Restores 50 HP
+4|Mana Potion|Restores 50 MP`,
+    "event": `0|SHARD|A unique magical crystal...
+1|BRONZE TICKET|Enigmatic key...
+2|SILVER TICKET|Secrets linger...
+3|GOLDEN TICKET|A treasure veiled...
+4|MAGICAL TICKET|Cryptic talisman...
+5|YOUPLING RED PACKET|Coins and surprises
+6|YOULONG RED PACKET|More coins and surprises
+7|YOUDRAKE RED PACKET|Significant coins
+8|YOUKING RED PACKET|Lot of coins
+9|GEM|Born from resonance`,
+    "lings": `0|Starter Ling|Basic companion
+1|Fire Ling|Small fire spirit
+2|Water Ling|Small water spirit`
+};
+
+const fastProvider = new ethers.JsonRpcProvider(RPC_URL, CHAIN_ID);
+
+const COLLECTIONS = {
+    "0x4f63f890F33cf1499649f6aAea2Cd9dD73FFb92e": { 
+        name: "Items NFT", slug: "items", 
+        dataFile: "data/ItemsData.txt",
+        imageFolder: "images/ItemImages",
+        ranges: [[1, 50], [101, 150], [201, 250], [1001, 1200], [3001, 3100], [6001, 6100]]
+    },
+    "0x90e1606D2047C9AC76BDfD0fC5a28C683512aEFE": { 
+        name: "Event/Currency", slug: "event", 
+        dataFile: "data/EventData.txt",
+        imageFolder: "images/EventImages",
+        ranges: [[0, 20]]
+    },
+    "0xf2aB95244CE9f89116BEe475fa3e6676F1A4daF7": { 
+        name: "Lings", slug: "lings", 
+        dataFile: "data/LingsData.txt",
+        imageFolder: "images/LingsImages",
+        ranges: [[0, 200], [10000, 10200]]
+    }
+};
+
+const MARKET_ABI = [
+    "function activeListingCount() view returns (uint256)",
+    "function createListing(address,uint256,uint256,uint256) returns (uint256)",
+    "function buy(uint256,uint256,address) payable",
+    "function cancelListing(uint256)",
+    "function updatePrice(uint256,uint256)",
+    "function feeBps() view returns (uint16)",
+    "event ListingCreated(uint256 indexed listingId, address indexed seller, address indexed token, uint256 tokenId, uint256 amount, uint256 pricePerUnitWei)",
+    "event ListingPriceUpdated(uint256 indexed listingId, address indexed seller, uint256 oldPricePerUnitWei, uint256 newPricePerUnitWei)",
+    "event ListingCancelled(uint256 indexed listingId, address indexed seller, uint256 amountReturned)",
+    "event Sale(uint256 indexed listingId, address indexed buyer, address indexed recipient, uint256 amount, uint256 totalPriceWei, uint256 sellerProceedsWei, uint256 feeWei, address royaltyReceiver, uint256 royaltyWei)"
+];
+const ERC1155_ABI = [
+    "function isApprovedForAll(address account, address operator) view returns (bool)",
+    "function setApprovalForAll(address operator, bool approved)",
+    "function balanceOf(address account, uint256 id) view returns (uint256)",
+    "function balanceOfBatch(address[] accounts, uint256[] ids) view returns (uint256[])",
+    "function royaltyInfo(uint256 tokenId, uint256 salePrice) view returns (address receiver, uint256 royaltyAmount)"
+];
+
+// --- HELPER FUNCTIONS ---
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+async function getTransactionReceiptWithRetry(txHash, maxRetries = 60) {
+    let retries = 0;
+    await delay(100);
+    while (retries < maxRetries) {
+        try {
+            const receipt = await fastProvider.getTransactionReceipt(txHash);
+            if (receipt) return receipt;
+        } catch (e) {}
+        await delay(450); 
+        retries++;
+    }
+    return null;
+}
+
+function renderPagination(containerId, currentPage, totalPages, onPageChange) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'page-btn';
+    prevBtn.innerText = '← Previous';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => onPageChange(currentPage - 1);
+
+    const info = document.createElement('span');
+    info.className = 'page-info';
+    info.innerText = `Page ${currentPage} of ${totalPages}`;
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'page-btn';
+    nextBtn.innerText = 'Next →';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => onPageChange(currentPage + 1);
+
+    container.appendChild(prevBtn);
+    container.appendChild(info);
+    container.appendChild(nextBtn);
+}
+
+// --- NOTIFICATION SYSTEM ---
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerText = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// --- STATUS OVERLAY ---
+function openStatusOverlay(msg, subMsg = "Please check your wallet") {
+    document.getElementById('status-msg').innerText = msg;
+    document.getElementById('status-sub-msg').innerText = subMsg;
+    document.getElementById('status-spinner').style.display = 'block';
+    document.getElementById('status-close-btn').classList.add('hidden');
+    document.getElementById('status-overlay').classList.add('active');
+}
+
+function updateStatusOverlay(msg, subMsg = "") {
+    document.getElementById('status-msg').innerText = msg;
+    if(subMsg) document.getElementById('status-sub-msg').innerText = subMsg;
+}
+
+function closeStatusOverlay() {
+    document.getElementById('status-overlay').classList.remove('active');
+}
+
+function showStatusError(msg) {
+    document.getElementById('status-msg').innerText = "Error";
+    document.getElementById('status-sub-msg').innerText = msg;
+    document.getElementById('status-spinner').style.display = 'none';
+    document.getElementById('status-close-btn').classList.remove('hidden');
+}
+
+// --- STATE ---
+let provider, signer, userAddress;
+let listings = new Map(); 
+let userInventory = []; 
+let lastSyncedBlock = START_BLOCK;
+let isSyncing = false;
+let currentTab = 'market';
+let platformFeeBps = 0; 
+
+// Metadata Cache & All Items
+let metadataCache = {};
+let allKnownItems = []; // { collection, tokenId, name, desc, imagePath }
+
+// Pagination State
+let marketPage = 1;
+let inventoryPage = 1;
+let mylistPage = 1;
+let allPage = 1;
+
+// --- INITIALIZATION ---
+window.onload = async () => {
+    // Min wait time for effect
+    const minWait = new Promise(r => setTimeout(r, 1500));
+
+    initCollectionsUI();
+    loadState();
+    // Use Promise.all to load metadata and wait for min time in parallel
+    await Promise.all([
+        loadMetadata(), 
+        minWait
+    ]);
+    
+    provider = new ethers.JsonRpcProvider(RPC_URL, CHAIN_ID);
+    
+    initPlatformFee();
+
+    syncEvents(); 
+    setInterval(syncEvents, SYNC_INTERVAL); 
+    setInterval(checkIntegrity, INTEGRITY_INTERVAL); 
+
+    if(window.ethereum && window.ethereum.selectedAddress) {
+        connectWallet();
+    }
+
+    // Fade out loader
+    const loader = document.getElementById('app-loader');
+    if(loader) {
+        loader.classList.add('hidden-loader');
+        setTimeout(() => loader.remove(), 600); // Remove from DOM after transition
+    }
+};
+
+async function initPlatformFee() {
+    try {
+        const m = new ethers.Contract(MARKET_ADDR, MARKET_ABI, fastProvider);
+        platformFeeBps = await m.feeBps();
+    } catch(e) {}
+}
+
+function initCollectionsUI() {
+    const sel = document.getElementById('filter-collection');
+    const invSel = document.getElementById('inv-filter-collection');
+    const mySel = document.getElementById('mylist-filter-collection');
+    const allSel = document.getElementById('all-filter-collection');
+    
+    for (const [addr, data] of Object.entries(COLLECTIONS)) {
+        const opt = document.createElement('option');
+        opt.value = addr; opt.innerText = data.name; sel.appendChild(opt);
+        const opt2 = document.createElement('option');
+        opt2.value = addr; opt2.innerText = data.name; invSel.appendChild(opt2);
+        const opt3 = document.createElement('option');
+        opt3.value = addr; opt3.innerText = data.name; mySel.appendChild(opt3);
+        const opt4 = document.createElement('option');
+        opt4.value = addr; opt4.innerText = data.name; allSel.appendChild(opt4);
+    }
+}
+
+// --- DATA FILES PARSING ---
+async function loadMetadata() {
+    allKnownItems = []; // Reset
+    console.log("Starting metadata load...");
+    
+    for (const [addr, data] of Object.entries(COLLECTIONS)) {
+        if (!metadataCache[data.slug]) metadataCache[data.slug] = {};
+        
+        let text = "";
+        try {
+            const response = await fetch(data.dataFile);
+            if (!response.ok) {
+                console.warn(`Fetch failed for ${data.dataFile}, using fallback.`);
+                throw new Error("Network response was not ok");
+            }
+            text = await response.text();
+        } catch (e) {
+            // Fallback for Canvas/Preview environments where fetch fails
+            console.log(`Using fallback data for ${data.slug}`);
+            text = FALLBACK_DATA[data.slug] || "";
+        }
+
+        if (!text) continue;
+        
+        let count = 0;
+        const lines = text.split('\n');
+        for (const line of lines) {
+            // Try Pipe first, then Tab
+            let parts = line.split('|');
+            if (parts.length < 2) {
+                parts = line.split('\t');
+            }
+
+            if (parts.length >= 2) {
+                const id = parts[0].trim();
+                // Basic check if ID is a number (skip headers)
+                if (!/^\d+$/.test(id)) continue; 
+                
+                const name = parts[1].trim();
+                // Handle cases where description might be missing
+                const desc = parts.length > 2 ? parts[2].trim() : "";
+                
+                metadataCache[data.slug][id] = { name, desc };
+                
+                // Add to All Collections List
+                const imagePath = `${data.imageFolder}/${id}.webp`;
+                allKnownItems.push({
+                    collection: addr,
+                    tokenId: id,
+                    name: name,
+                    desc: desc,
+                    image: imagePath
+                });
+                count++;
+            }
+        }
+        console.log(`Loaded ${count} items for ${data.slug}`);
+    }
+    
+    // Sort allKnownItems by Collection Name then ID for cleaner view
+    allKnownItems.sort((a,b) => {
+        // Get collection names for sorting
+        const nameA = COLLECTIONS[a.collection]?.name || "";
+        const nameB = COLLECTIONS[b.collection]?.name || "";
+        
+        if(nameA !== nameB) return nameA.localeCompare(nameB);
+        return parseInt(a.tokenId) - parseInt(b.tokenId);
+    });
+    
+    console.log("Total items known:", allKnownItems.length);
+    
+    renderMarketplace();
+    renderMyListings();
+    renderInventory();
+    renderAllCollections();
+}
+
+function getTokenMetadata(collection, tokenId) {
+    const colData = COLLECTIONS[collection];
+    if (!colData) return { name: `Unknown #${tokenId}`, image: null };
+    
+    const imagePath = `${colData.imageFolder}/${tokenId}.webp`;
+    
+    const realData = metadataCache[colData.slug]?.[tokenId.toString()];
+    if (realData && realData.name) {
+        return { name: `#${tokenId} ${realData.name}`, image: imagePath };
+    }
+    return { name: `${colData.name} #${tokenId}`, image: imagePath };
+}
+
+// --- DATA MANAGEMENT ---
+function loadState() {
+    const savedListings = localStorage.getItem('faterpg_listings');
+    const savedBlock = localStorage.getItem('faterpg_lastblock');
+    if (savedListings) {
+        try { listings = new Map(JSON.parse(savedListings)); } catch(e) { listings = new Map(); }
+    }
+    if (savedBlock) lastSyncedBlock = parseInt(savedBlock);
+    renderMarketplace();
+}
+
+function saveState() {
+    localStorage.setItem('faterpg_listings', JSON.stringify(Array.from(listings.entries())));
+    localStorage.setItem('faterpg_lastblock', lastSyncedBlock.toString());
+}
+
+// --- POLLING ---
+function manualSync() {
+    if(isSyncing) return;
+    document.getElementById('sync-status').innerText = "Status: Refreshing...";
+    document.getElementById('status-indicator').className = "status-dot syncing";
+    syncEvents();
+    if(userAddress) { scanInventory(); updateWalletBalance(); }
+}
+
+async function checkIntegrity() {
+    if (!provider || isSyncing) return; 
+    try {
+        const market = new ethers.Contract(MARKET_ADDR, MARKET_ABI, provider);
+        const remoteCount = await market.activeListingCount();
+        const localCount = Array.from(listings.values()).filter(l => l.active).length;
+        const statusEl = document.getElementById('sync-status');
+        const dot = document.getElementById('status-indicator');
+        
+        if (BigInt(remoteCount) !== BigInt(localCount)) {
+            statusEl.innerText = `Status: Syncing (Remote:${remoteCount} Local:${localCount})...`;
+            dot.className = "status-dot syncing";
+            syncEvents();
+        } else {
+            if (statusEl.innerText.includes("Waiting") || statusEl.innerText.includes("Synced")) {
+                 statusEl.innerText = "Status: Synced (Live)";
+                 dot.className = "status-dot live";
+            }
+        }
+    } catch (e) { }
+}
+
+async function syncEvents() {
+    if (isSyncing) return;
+    isSyncing = true;
+    try {
+        const currentBlock = await provider.getBlockNumber();
+        document.getElementById('block-info').innerText = `Block: ${currentBlock}`;
+
+        if (lastSyncedBlock > currentBlock) lastSyncedBlock = START_BLOCK;
+        while (lastSyncedBlock < currentBlock - REORG_BUFFER) {
+            const toBlock = Math.min(lastSyncedBlock + CHUNK_SIZE, currentBlock - REORG_BUFFER);
+            const iface = new ethers.Interface(MARKET_ABI);
+            const logs = await provider.getLogs({ address: MARKET_ADDR, fromBlock: lastSyncedBlock + 1, toBlock: toBlock });
+
+            for (const log of logs) {
+                try {
+                    const parsed = iface.parseLog(log);
+                    if (!parsed) continue;
+                    const args = parsed.args;
+                    const id = args.listingId.toString();
+
+                    if (parsed.name === 'ListingCreated') {
+                        listings.set(id, {
+                            id: id, seller: args.seller, token: args.token, tokenId: args.tokenId.toString(),
+                            amount: BigInt(args.amount).toString(), price: BigInt(args.pricePerUnitWei).toString(),
+                            active: true, createdAt: toBlock
+                        });
+                    } else if (parsed.name === 'ListingPriceUpdated') {
+                        if (listings.has(id)) {
+                            const l = listings.get(id); l.price = BigInt(args.newPricePerUnitWei).toString();
+                            listings.set(id, l);
+                        }
+                    } else if (parsed.name === 'ListingCancelled') {
+                        if (listings.has(id)) {
+                            const l = listings.get(id); l.active = false; l.amount = "0";
+                            listings.set(id, l);
+                        }
+                    } else if (parsed.name === 'Sale') {
+                        if (listings.has(id)) {
+                            const l = listings.get(id);
+                            const soldAmount = BigInt(args.amount);
+                            const currentAmount = BigInt(l.amount);
+                            const newAmount = currentAmount - soldAmount;
+                            l.amount = newAmount.toString();
+                            if (newAmount <= 0n) { l.active = false; l.amount = "0"; }
+                            listings.set(id, l);
+                        }
+                    }
+                } catch (e) {}
+            }
+            lastSyncedBlock = toBlock;
+            saveState();
+        }
+        renderMarketplace();
+        renderAllCollections(); // Refresh All Collections prices
+        if (currentTab === 'mylist') renderMyListings();
+    } catch (err) {
+        console.error("Sync error:", err);
+    } finally {
+        isSyncing = false;
+    }
+}
+
+// --- INVENTORY ---
+async function scanInventory() {
+    if (!userAddress) return;
+    const msg = document.getElementById('inv-msg');
+    if (msg) {
+        msg.innerHTML = "<div class='spinner' style='width:20px;height:20px;border-width:2px;'></div><br>Scanning wallet...";
+        msg.style.display = 'block';
+    }
+    
+    userInventory = [];
+    const BATCH_SIZE = 100;
+
+    try {
+        for (const [collAddr, data] of Object.entries(COLLECTIONS)) {
+            const contract = new ethers.Contract(collAddr, ERC1155_ABI, provider);
+            let idsToScan = [];
+            if (data.ranges) {
+                for (const range of data.ranges) {
+                    for (let i = range[0]; i <= range[1]; i++) idsToScan.push(i);
+                }
+            }
+            if (idsToScan.length === 0) continue;
+
+            for (let i = 0; i < idsToScan.length; i += BATCH_SIZE) {
+                const chunkIds = idsToScan.slice(i, i + BATCH_SIZE);
+                const accounts = new Array(chunkIds.length).fill(userAddress);
+                try {
+                    const balances = await contract.balanceOfBatch(accounts, chunkIds);
+                    for (let j = 0; j < chunkIds.length; j++) {
+                        if (balances[j] > 0n) {
+                            userInventory.push({
+                                collection: collAddr, tokenId: chunkIds[j].toString(), balance: balances[j].toString()
+                            });
+                        }
+                    }
+                } catch (batchErr) {}
+            }
+        }
+        renderInventory();
+    } catch (e) {
+        if(msg) msg.innerText = "Error: " + e.message;
+    }
+}
+
+async function scanCustomId() {
+    const idEl = document.getElementById('manual-scan-id');
+    if (!idEl) return;
+    const id = idEl.value;
+    if (!id || !userAddress) return;
+    
+    try {
+        let found = false;
+        for (const [collAddr, data] of Object.entries(COLLECTIONS)) {
+            const contract = new ethers.Contract(collAddr, ERC1155_ABI, provider);
+            const bal = await contract.balanceOf(userAddress, id);
+            if (bal > 0n) {
+                const exists = userInventory.find(i => i.collection === collAddr && i.tokenId == id);
+                if (!exists) {
+                    userInventory.push({ collection: collAddr, tokenId: id.toString(), balance: bal.toString() });
+                    found = true;
+                }
+            }
+        }
+        if (found) { showToast(`Found item #${id}!`); renderInventory(); } 
+        else { showToast(`You don't own item #${id}`, 'error'); }
+    } catch (e) { showToast("Scan error", 'error'); }
+}
+
+// --- RENDERING ---
+let debounceTimer;
+function debounceRender() { clearTimeout(debounceTimer); marketPage = 1; debounceTimer = setTimeout(renderMarketplace, 300); }
+function debounceRenderMyListings() { clearTimeout(debounceTimer); mylistPage = 1; debounceTimer = setTimeout(renderMyListings, 300); }
+function debounceRenderInventory() { clearTimeout(debounceTimer); inventoryPage = 1; debounceTimer = setTimeout(renderInventory, 300); }
+function debounceRenderAll() { clearTimeout(debounceTimer); allPage = 1; debounceTimer = setTimeout(renderAllCollections, 300); }
+
+function renderMarketplace() {
+    if (currentTab !== 'market') return;
+    const grid = document.getElementById('market-grid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    const filterColl = document.getElementById('filter-collection').value;
+    const filterSearch = document.getElementById('market-search').value.toLowerCase();
+    const filterSeller = document.getElementById('filter-seller').value.toLowerCase();
+    const sortOrder = document.getElementById('sort-order').value;
+
+    let items = Array.from(listings.values()).filter(l => {
+        if (!l.active || BigInt(l.amount) <= 0n) return false;
+        if (filterColl !== 'all' && l.token.toLowerCase() !== filterColl.toLowerCase()) return false;
+        if (filterSeller && !l.seller.toLowerCase().includes(filterSeller)) return false;
+        
+        if (filterSearch) {
+            const meta = getTokenMetadata(l.token, l.tokenId);
+            const matchId = l.tokenId.toString().includes(filterSearch);
+            const matchName = meta.name.toLowerCase().includes(filterSearch);
+            if (!matchId && !matchName) return false;
+        }
+        return true;
+    });
+
+    items.sort((a, b) => {
+        if (sortOrder === 'newest') return parseInt(b.id) - parseInt(a.id);
+        const pA = BigInt(a.price); const pB = BigInt(b.price);
+        if (sortOrder === 'price_asc') return pA < pB ? -1 : 1;
+        if (sortOrder === 'price_desc') return pA > pB ? -1 : 1;
+        return 0;
+    });
+
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (marketPage > totalPages) marketPage = Math.max(1, totalPages);
+    const start = (marketPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginatedItems = items.slice(start, end);
+
+    document.getElementById('market-count').innerText = totalItems;
+    paginatedItems.forEach(item => grid.appendChild(createCard(item, 'market')));
+    renderPagination('market-pagination', marketPage, totalPages, (newPage) => {
+        marketPage = newPage; renderMarketplace(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+function renderAllCollections() {
+    if (currentTab !== 'all') return;
+    const grid = document.getElementById('all-grid');
+    if(!grid) return;
+    grid.innerHTML = '';
+
+    const filterColl = document.getElementById('all-filter-collection').value;
+    const filterSearch = document.getElementById('all-search').value.toLowerCase();
+
+    let items = allKnownItems.filter(item => {
+        if (filterColl !== 'all' && item.collection !== filterColl) return false;
+        if (filterSearch) {
+            const matchesId = item.tokenId.includes(filterSearch);
+            const matchesName = item.name.toLowerCase().includes(filterSearch);
+            if (!matchesId && !matchesName) return false;
+        }
+        return true;
+    });
+
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (allPage > totalPages) allPage = Math.max(1, totalPages);
+    const start = (allPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginatedItems = items.slice(start, end);
+
+    document.getElementById('all-count').innerText = totalItems;
+    paginatedItems.forEach(item => grid.appendChild(createCard(item, 'all')));
+    renderPagination('all-pagination', allPage, totalPages, (newPage) => {
+        allPage = newPage; renderAllCollections(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+function renderMyListings() {
+    if (currentTab !== 'mylist') return;
+    const grid = document.getElementById('mylist-grid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    
+    if (!userAddress) { grid.innerHTML = '<p style="color:var(--text-muted)">Please connect wallet to view your listings.</p>'; return; }
+
+    const filterColl = document.getElementById('mylist-filter-collection').value;
+    const filterSearch = document.getElementById('mylist-search').value.toLowerCase();
+    const sortOrder = document.getElementById('mylist-sort-order').value;
+
+    let items = Array.from(listings.values()).filter(l => {
+        if (!l.active || BigInt(l.amount) <= 0n) return false;
+        if (l.seller.toLowerCase() !== userAddress.toLowerCase()) return false;
+        if (filterColl !== 'all' && l.token.toLowerCase() !== filterColl.toLowerCase()) return false;
+        
+        if (filterSearch) {
+            const meta = getTokenMetadata(l.token, l.tokenId);
+            const matchId = l.tokenId.toString().includes(filterSearch);
+            const matchName = meta.name.toLowerCase().includes(filterSearch);
+            if (!matchId && !matchName) return false;
+        }
+        return true;
+    });
+
+    items.sort((a, b) => {
+        if (sortOrder === 'newest') return parseInt(b.id) - parseInt(a.id);
+        const pA = BigInt(a.price); const pB = BigInt(b.price);
+        if (sortOrder === 'price_asc') return pA < pB ? -1 : 1;
+        if (sortOrder === 'price_desc') return pA > pB ? -1 : 1;
+        return 0;
+    });
+
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (mylistPage > totalPages) mylistPage = Math.max(1, totalPages);
+    const start = (mylistPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginatedItems = items.slice(start, end);
+
+    document.getElementById('mylist-count').innerText = totalItems;
+    paginatedItems.forEach(item => grid.appendChild(createCard(item, 'mylist')));
+    renderPagination('mylist-pagination', mylistPage, totalPages, (newPage) => {
+        mylistPage = newPage; renderMyListings(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+function renderInventory() {
+    if (currentTab !== 'inventory') return;
+    const grid = document.getElementById('inventory-grid');
+    const msg = document.getElementById('inv-msg');
+    if(!grid) return;
+    grid.innerHTML = '';
+
+    if (!userAddress) { if(msg) msg.style.display = 'block'; return; }
+
+    if (userInventory.length === 0) {
+        if(msg) {
+            msg.innerHTML = "No items found in scan range.<br>Try 'Scan Custom ID'.";
+            msg.style.display = 'block';
+        }
+    } else {
+        if(msg) msg.style.display = 'none';
+    }
+
+    const filterColl = document.getElementById('inv-filter-collection').value;
+    const search = document.getElementById('inv-search').value.toLowerCase();
+
+    let items = userInventory.filter(item => {
+        if (filterColl !== 'all' && item.collection !== filterColl) return false;
+        if (search) {
+            const meta = getTokenMetadata(item.collection, item.tokenId);
+            const matchId = item.tokenId.toString().includes(search);
+            const matchName = meta.name.toLowerCase().includes(search);
+            if (!matchId && !matchName) return false;
+        }
+        return true;
+    });
+
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (inventoryPage > totalPages) inventoryPage = Math.max(1, totalPages);
+    const start = (inventoryPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginatedItems = items.slice(start, end);
+
+    paginatedItems.forEach(item => grid.appendChild(createCard(item, 'inventory')));
+    renderPagination('inventory-pagination', inventoryPage, totalPages, (newPage) => {
+        inventoryPage = newPage; renderInventory(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+function createCard(item, view) {
+    let meta = {};
+    let collectionAddr = "";
+    let tokenId = "";
+
+    // 1. Resolve Metadata & IDs based on View
+    if (view === 'all') {
+        collectionAddr = item.collection;
+        tokenId = item.tokenId;
+        meta = { name: `#${tokenId} ${item.name}`, image: item.image };
+    } else {
+        // Market, Inventory, MyListings
+        collectionAddr = view === 'inventory' ? item.collection : item.token;
+        tokenId = item.tokenId;
+        meta = getTokenMetadata(collectionAddr, tokenId);
+    }
+
+    const div = document.createElement('div');
+    div.className = 'card';
+    let bottomHtml = '';
+
+    // 2. Logic for "All Collections" View
+    if (view === 'all') {
+        // Search for cheapest active listing
+        const activeListings = Array.from(listings.values()).filter(l => 
+            l.active && BigInt(l.amount) > 0n && 
+            l.token.toLowerCase() === collectionAddr.toLowerCase() && 
+            l.tokenId === tokenId
+        );
+        
+        if (activeListings.length > 0) {
+            // Sort by price
+            activeListings.sort((a,b) => {
+                const diff = BigInt(a.price) - BigInt(b.price);
+                return diff < 0n ? -1 : diff > 0n ? 1 : 0;
+            });
+            const best = activeListings[0];
+            const priceEth = ethers.formatEther(best.price);
+            
+            bottomHtml = `
+                <div class="card-row">
+                    <span>Best Price</span>
+                    <span style="color:var(--currency)">${priceEth} $S</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-buy" onclick="openBuyModal('${best.id}')">Buy Now</button>
+                </div>
+            `;
+        } else {
+            bottomHtml = `
+                <div class="card-row">
+                    <span>Status</span>
+                    <span style="color:var(--text-muted)">Not Listed</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn" disabled style="background:var(--bg-hover);color:var(--text-muted)">Unavailable</button>
+                </div>
+            `;
+        }
+    } 
+    // 3. Logic for Inventory View
+    else if (view === 'inventory') {
+        bottomHtml = `
+            <div class="card-row"><span>Balance</span> <span>${item.balance}</span></div>
+            <div class="card-actions">
+                <button class="btn btn-update" onclick="openListModal('${collectionAddr}', '${tokenId}', '${item.balance}')">List for Sale</button>
+            </div>
+        `;
+    } 
+    // 4. Logic for Marketplace / My Listings
+    else {
+        const isOwner = userAddress && item.seller.toLowerCase() === userAddress.toLowerCase();
+        const priceEth = ethers.formatEther(item.price);
+        
+        let feeRow = '';
+        if (view === 'mylist') {
+            feeRow = `
+                <div id="fee-${item.id}" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">
+                    <em>Loading fee info...</em>
+                </div>
+            `;
+            setTimeout(() => loadListingFees(item.id, item.token, item.tokenId, item.price), 100);
+        }
+
+        bottomHtml = `
+            <div class="card-row">
+                <span>Seller</span>
+                <span title="${item.seller}">${item.seller.substring(0,6)}...${item.seller.substring(38)}</span>
+            </div>
+            <div class="price">${priceEth} <span class="currency-symbol">$S</span></div>
+            ${feeRow}
+            <div class="card-actions">
+                ${isOwner 
+                    ? `<button class="btn btn-update" onclick="openUpdateModal('${item.id}')">Edit</button>
+                       <button class="btn btn-cancel" onclick="cancelListingTx('${item.id}')">Cancel</button>` 
+                    : `<button class="btn btn-buy" onclick="openBuyModal('${item.id}')">Buy</button>`
+                }
+            </div>
+        `;
+    }
+
+    div.innerHTML = `
+        <div class="card-img-placeholder">
+            <img src="${meta.image}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerText='${meta.name}'" alt="${meta.name}">
+        </div>
+        <div class="card-body">
+            <div class="card-title">${meta.name}</div>
+            <div class="card-row">
+                <span>Token ID</span> <span>${tokenId}</span>
+            </div>
+            ${view === 'market' || view === 'mylist' ? `<div class="card-row"><span>Quantity</span> <span>${item.amount}</span></div>` : ''}
+            <div style="flex-grow:1"></div>
+            ${bottomHtml}
+        </div>
+    `;
+    return div;
+}
+
+// --- FEE LOGIC ---
+
+async function loadListingFees(listingId, tokenAddr, tokenId, priceWei) {
+    try {
+        let royaltyWei = 0n;
+        const contract = new ethers.Contract(tokenAddr, ERC1155_ABI, fastProvider);
+        try {
+            const info = await contract.royaltyInfo(tokenId, priceWei);
+            royaltyWei = info[1];
+        } catch {}
+
+        const feeWei = (BigInt(priceWei) * BigInt(platformFeeBps)) / 10000n;
+        const totalFeeWei = feeWei + royaltyWei;
+        const netWei = BigInt(priceWei) - totalFeeWei;
+
+        const el = document.getElementById(`fee-${listingId}`);
+        if(el) {
+            el.innerHTML = `
+                Fees: ${ethers.formatEther(totalFeeWei)} | Net: <span style="color:var(--success)">${ethers.formatEther(netWei)} $S</span>
+            `;
+        }
+    } catch(e) { console.log(e); }
+}
+
+async function calculateListingFees() {
+    const priceInput = document.getElementById('list-price');
+    const summary = document.getElementById('list-fee-summary');
+    const tokenAddr = document.getElementById('list-collection').value;
+    const tokenId = document.getElementById('list-tokenid').value;
+
+    if (!priceInput || !priceInput.value) {
+        summary.classList.add('hidden');
+        return;
+    }
+
+    try {
+        const priceWei = ethers.parseEther(priceInput.value);
+        let royaltyWei = 0n;
+        
+        // Fetch Royalty
+        const contract = new ethers.Contract(tokenAddr, ERC1155_ABI, fastProvider);
+        try {
+            const info = await contract.royaltyInfo(tokenId, priceWei);
+            royaltyWei = info[1];
+        } catch {}
+
+        const feeWei = (priceWei * BigInt(platformFeeBps)) / 10000n;
+        const totalFeeWei = feeWei + royaltyWei;
+        const netWei = priceWei - totalFeeWei;
+
+        summary.innerHTML = `
+            <div class="fee-row"><span>Total Royalties</span> <span>-${ethers.formatEther(totalFeeWei)} $S</span></div>
+            <div class="fee-row total"><span>Your Net Earning</span> <span>${ethers.formatEther(netWei)} $S</span></div>
+        `;
+        summary.classList.remove('hidden');
+    } catch(e) {
+        summary.classList.add('hidden');
+    }
+}
+
+// --- INTERACTIONS ---
+async function connectWallet() {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const browserProvider = new ethers.BrowserProvider(window.ethereum);
+            const network = await browserProvider.getNetwork();
+
+            if (network.chainId !== CHAIN_ID) {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: CHAIN_ID_HEX }],
+                    });
+                } catch (switchError) {
+                    if (switchError.code === 4902) {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: CHAIN_ID_HEX,
+                                chainName: 'Sonic Labs',
+                                rpcUrls: [RPC_URL],
+                                nativeCurrency: { name: 'Sonic', symbol: 'S', decimals: 18 }
+                            }],
+                        });
+                    } else throw switchError;
+                }
+            }
+
+            const connectedProvider = new ethers.BrowserProvider(window.ethereum);
+            signer = await connectedProvider.getSigner();
+            userAddress = await signer.getAddress();
+            
+            document.getElementById('connect-btn').innerText = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
+            provider = connectedProvider; 
+            
+            renderMarketplace();
+            scanInventory(); 
+            updateWalletBalance();
+
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    } else {
+        showToast("Please install MetaMask or Rabby!", 'error');
+    }
+}
+
+async function updateWalletBalance() {
+    if (!userAddress || !provider) return;
+    try {
+        const bal = await provider.getBalance(userAddress);
+        const fmt = ethers.formatEther(bal);
+        const parts = fmt.split('.');
+        let display = parts[0] + (parts.length > 1 ? '.' + parts[1].substring(0, 4) : '.0000');
+        document.getElementById('wallet-balance').innerHTML = `${display} <span class="currency-symbol">$S</span>`;
+        document.getElementById('wallet-balance').style.display = 'flex';
+    } catch (e) {}
+}
+
+// --- LISTING ---
+function openListModal(collection, tokenId, balance) {
+    document.getElementById('list-collection').value = collection;
+    document.getElementById('list-tokenid').value = tokenId;
+    document.getElementById('list-amount').value = 1;
+    document.getElementById('list-amount').max = balance;
+    document.getElementById('list-max-qty').innerText = balance;
+    document.getElementById('list-price').value = '';
+    document.getElementById('list-fee-summary').classList.add('hidden');
+    
+    document.getElementById('btn-approve').className = "btn btn-update";
+    document.getElementById('btn-approve').classList.remove('hidden');
+    document.getElementById('btn-create').disabled = true;
+    document.getElementById('create-msg').innerText = "";
+
+    const meta = getTokenMetadata(collection, tokenId);
+    document.getElementById('list-preview').innerText = `Listing: ${meta.name}`;
+    document.getElementById('list-modal').classList.add('active');
+}
+
+async function checkAndApprove() {
+    if (!signer) { showToast("Connect wallet first", 'error'); return; }
+    const collection = document.getElementById('list-collection').value;
+    const btn = document.getElementById('btn-approve');
+    const msg = document.getElementById('create-msg');
+    const createBtn = document.getElementById('btn-create');
+
+    const tokenContract = new ethers.Contract(collection, ERC1155_ABI, signer);
+    
+    try {
+        btn.innerText = "Checking...";
+        const isApproved = await tokenContract.isApprovedForAll(userAddress, MARKET_ADDR);
+        
+        if (!isApproved) {
+            btn.innerText = "Sign Approval in Wallet...";
+            const tx = await tokenContract.setApprovalForAll(MARKET_ADDR, true);
+            
+            msg.innerText = "Approval signed! Proceed to Confirm Listing.";
+            btn.className = "btn btn-buy hidden"; 
+            createBtn.disabled = false;
+
+            getTransactionReceiptWithRetry(tx.hash).then(receipt => {
+                if (!receipt || receipt.status === 0) {
+                    showToast("Approval failed on-chain!", 'error');
+                    btn.className = "btn btn-update";
+                    btn.innerText = "Check Allowance";
+                    createBtn.disabled = true;
+                    msg.innerText = "Approval failed.";
+                }
+            });
+        } else {
+            msg.innerText = "Already approved.";
+            btn.className = "btn btn-buy hidden";
+            createBtn.disabled = false;
+        }
+    } catch (e) {
+        msg.innerText = "Error: " + e.message;
+        btn.innerText = "Check Allowance";
+    }
+}
+
+async function createListing() {
+    if (!signer) { showToast("Connect wallet", 'error'); return; }
+    
+    const collection = document.getElementById('list-collection').value;
+    const tokenId = document.getElementById('list-tokenid').value;
+    const amount = document.getElementById('list-amount').value;
+    const priceEth = document.getElementById('list-price').value;
+
+    if (!priceEth) { showToast("Enter price", 'error'); return; }
+
+    try {
+        const market = new ethers.Contract(MARKET_ADDR, MARKET_ABI, signer);
+        const priceWei = ethers.parseEther(priceEth);
+        
+        openStatusOverlay("Processing Listing...", "Please sign the transaction");
+        const tx = await market.createListing(collection, tokenId, amount, priceWei);
+        updateStatusOverlay("Creating Listing...", "Transaction sent. Waiting for confirmation...");
+        
+        closeModal('list-modal');
+        
+        const receipt = await getTransactionReceiptWithRetry(tx.hash);
+        
+        if (!receipt || receipt.status === 0) throw new Error("Transaction failed");
+
+        const iface = new ethers.Interface(MARKET_ABI);
+        for (const log of receipt.logs) {
+            try {
+                if (log.address.toLowerCase() === MARKET_ADDR.toLowerCase()) {
+                    const parsed = iface.parseLog(log);
+                    if (parsed && parsed.name === 'ListingCreated') {
+                         const args = parsed.args;
+                         listings.set(args.listingId.toString(), {
+                            id: args.listingId.toString(), seller: args.seller, token: args.token, tokenId: args.tokenId.toString(),
+                            amount: BigInt(args.amount).toString(), price: BigInt(args.pricePerUnitWei).toString(),
+                            active: true, createdAt: receipt.blockNumber
+                        });
+                    }
+                }
+            } catch (e) { }
+        }
+
+        saveState();
+        closeStatusOverlay();
+        showToast("Listing Created Successfully!");
+        switchTab('market');
+        updateWalletBalance();
+        
+    } catch (e) {
+        showStatusError(e.message);
+    }
+}
+
+// --- BUY & UPDATE ---
+let selectedListingId = null;
+
+function openBuyModal(id) {
+    if (!signer) { connectWallet(); return; }
+    console.log("Opening Buy Modal for ID:", id);
+    selectedListingId = id;
+    const l = listings.get(id);
+    
+    if (!l) { showToast("Listing not found", 'error'); return; }
+    
+    const summaryEl = document.getElementById('buy-summary');
+    if (summaryEl) {
+        summaryEl.innerText = `Buying Token #${l.tokenId} (Price: ${ethers.formatEther(l.price)} $S)`;
+    }
+    
+    const amtEl = document.getElementById('buy-amount');
+    if (amtEl) {
+        amtEl.max = l.amount;
+        amtEl.value = 1;
+    }
+    
+    updateBuyTotal();
+    const modal = document.getElementById('buy-modal');
+    if (modal) modal.classList.add('active');
+}
+
+function updateBuyTotal() {
+    const qtyEl = document.getElementById('buy-amount');
+    if (!qtyEl) return;
+    const qty = qtyEl.value;
+    const l = listings.get(selectedListingId);
+    if (!l) return;
+    const total = BigInt(l.price) * BigInt(qty);
+    const totalEl = document.getElementById('buy-total-eth');
+    if (totalEl) totalEl.innerText = ethers.formatEther(total);
+}
+
+async function submitBuy() {
+    const idToBuy = selectedListingId;
+    const previousItem = { ...listings.get(idToBuy) };
+    if (!previousItem) return;
+
+    const prevInvIndex = userInventory.findIndex(i => 
+         i.collection.toLowerCase() === previousItem.token.toLowerCase() && i.tokenId === previousItem.tokenId
+    );
+    const previousInvItem = prevInvIndex >= 0 ? { ...userInventory[prevInvIndex] } : null;
+
+    const qty = document.getElementById('buy-amount').value;
+    const total = BigInt(previousItem.price) * BigInt(qty);
+
+    try {
+        const market = new ethers.Contract(MARKET_ADDR, MARKET_ABI, signer);
+        openStatusOverlay("Processing Purchase...", "Please sign the transaction");
+        const tx = await market.buy(idToBuy, qty, userAddress, { value: total });
+        
+        closeModal('buy-modal');
+        updateStatusOverlay("Purchase Sent", "Optimistically updating UI...");
+
+        // OPTIMISTIC UPDATE
+        if (listings.has(idToBuy)) {
+            const currentItem = listings.get(idToBuy);
+            const newAmount = BigInt(currentItem.amount) - BigInt(qty);
+            currentItem.amount = newAmount.toString();
+            if (newAmount <= 0n) { currentItem.active = false; currentItem.amount = "0"; }
+            listings.set(idToBuy, currentItem);
+            saveState();
+            renderMarketplace();
+        }
+
+        if (prevInvIndex >= 0) {
+             const currentInv = userInventory[prevInvIndex];
+             const newBal = BigInt(currentInv.balance) + BigInt(qty);
+             currentInv.balance = newBal.toString();
+        } else {
+             userInventory.push({ collection: previousItem.token, tokenId: previousItem.tokenId, balance: qty.toString() });
+        }
+        if (currentTab === 'inventory') renderInventory();
+
+        updateStatusOverlay("Confirming...", "Waiting for block confirmation");
+        const receipt = await getTransactionReceiptWithRetry(tx.hash);
+        
+        if (!receipt || receipt.status === 0) throw new Error("Transaction failed");
+        
+        closeStatusOverlay();
+        showToast("Purchase Successful!");
+        updateWalletBalance(); 
+    } catch (e) {
+        // Rollback
+        if (previousItem) { listings.set(idToBuy, previousItem); saveState(); renderMarketplace(); }
+        if (previousInvItem) { if (prevInvIndex >= 0) userInventory[prevInvIndex] = previousInvItem; } 
+        else { 
+            const newIndex = userInventory.findIndex(i => i.collection === previousItem.token && i.tokenId === previousItem.tokenId);
+            if (newIndex >= 0) userInventory.splice(newIndex, 1);
+        }
+        if (currentTab === 'inventory') renderInventory();
+
+        showStatusError(e.message);
+    }
+}
+
+function openUpdateModal(id) {
+    selectedListingId = id;
+    const modal = document.getElementById('update-modal');
+    if (modal) modal.classList.add('active');
+}
+
+async function submitUpdatePrice() {
+    const newPriceEth = document.getElementById('update-new-price').value;
+    if (!newPriceEth) return;
+
+    const idToUpdate = selectedListingId;
+    const previousItem = listings.get(idToUpdate);
+    const previousPrice = previousItem ? previousItem.price : null;
+
+    try {
+        const market = new ethers.Contract(MARKET_ADDR, MARKET_ABI, signer);
+        const newWei = ethers.parseEther(newPriceEth);
+        
+        openStatusOverlay("Updating Price...", "Please sign the transaction");
+        const tx = await market.updatePrice(idToUpdate, newWei);
+        closeModal('update-modal');
+        
+        // Optimistic
+        if (listings.has(idToUpdate)) {
+            const currentItem = listings.get(idToUpdate);
+            currentItem.price = newWei.toString();
+            listings.set(idToUpdate, currentItem);
+            saveState();
+            renderMarketplace();
+            if (currentTab === 'mylist') renderMyListings();
+        }
+        
+        updateStatusOverlay("Updating...", "Waiting for confirmation");
+        const receipt = await getTransactionReceiptWithRetry(tx.hash);
+        if (!receipt || receipt.status === 0) throw new Error("Transaction failed");
+        
+        closeStatusOverlay();
+        showToast("Price Updated!");
+
+    } catch (e) {
+        if (listings.has(idToUpdate) && previousPrice) {
+            const currentItem = listings.get(idToUpdate);
+            currentItem.price = previousPrice;
+            listings.set(idToUpdate, currentItem);
+            saveState();
+            renderMarketplace();
+            if (currentTab === 'mylist') renderMyListings();
+        }
+        showStatusError(e.message);
+    }
+}
+
+async function cancelListingTx(id) {
+    if (!confirm("Are you sure you want to cancel this listing?")) return;
+    const previousItem = { ...listings.get(id) };
+
+    try {
+        const market = new ethers.Contract(MARKET_ADDR, MARKET_ABI, signer);
+        openStatusOverlay("Cancelling...", "Sign transaction");
+        const tx = await market.cancelListing(id);
+        
+        if (listings.has(id)) {
+            const currentItem = listings.get(id);
+            currentItem.active = false; currentItem.amount = "0";
+            listings.set(id, currentItem);
+            saveState();
+            renderMarketplace();
+            if (currentTab === 'mylist') renderMyListings();
+        }
+
+        updateStatusOverlay("Cancelling...", "Waiting for confirmation");
+        const receipt = await getTransactionReceiptWithRetry(tx.hash);
+        if (!receipt || receipt.status === 0) throw new Error("Transaction failed");
+        
+        closeStatusOverlay();
+        showToast("Listing Cancelled");
+    } catch (e) {
+        if (previousItem) {
+            listings.set(id, previousItem);
+            saveState();
+            renderMarketplace();
+            if (currentTab === 'mylist') renderMyListings();
+        }
+        showStatusError(e.message);
+    }
+}
+
+function closeModal(id) { 
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active'); 
+    selectedListingId = null; 
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`nav-${tab}`).classList.add('active');
+    
+    document.getElementById('tab-market').classList.add('hidden');
+    document.getElementById('tab-mylist').classList.add('hidden');
+    document.getElementById('tab-inventory').classList.add('hidden');
+    document.getElementById('tab-all').classList.add('hidden');
+    
+    const target = document.getElementById(`tab-${tab}`);
+    if (target) target.classList.remove('hidden');
+
+    if (tab === 'market') renderMarketplace();
+    if (tab === 'mylist') renderMyListings();
+    if (tab === 'all') renderAllCollections();
+    if (tab === 'inventory') {
+        if (!userAddress) {
+            const msg = document.getElementById('inv-msg');
+            if (msg) msg.innerHTML = "Please connect wallet.";
+        }
+        else if (userInventory.length === 0) scanInventory();
+        else renderInventory();
+    }
+}
+</script>
+</body>
+</html>
